@@ -14,24 +14,7 @@ var express   = require('express'),
   server      = http.createServer(app),
   io          = require('socket.io').listen(server);
 
-app.root    	= __dirname;
-
-io.configure('production', function(){
-  io.enable('browser client etag');
-  io.set('log level', 1);
-
-  io.set('transports', [
-    'websocket'
-  , 'flashsocket'
-  , 'htmlfile'
-  , 'xhr-polling'
-  , 'jsonp-polling'
-  ]);
-});
-
-io.configure('development', function(){
-  io.set('transports', ['websocket']);
-});
+  app.root    	= __dirname;
 
 // create the application
 require('./app/config')(app, express);
@@ -41,6 +24,6 @@ require('./app/server/modules/chat')(io);
 require('./app/server/modules/pchat')(io);
 
 // fire up the server
-server.listen(80, function() {
+server.listen(8080, function() {
   console.log("Express server listening on port %d in %s mode", server.address().port, app.settings.env);
 });
