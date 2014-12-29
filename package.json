@@ -1,18 +1,18 @@
 {
   "name": "subnodes",
   "version": "0.0.1",
-  "description": "Subnodes is an open source project that enables people to easily set up portable access points for serving content.",
+  "description": "Hot Probs is a simple chat room built with Node.js.",
   "author": {
     "name": "Sarah Grant",
     "email": "info@subnod.es"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/chootka/subnodes.git"
+    "url": "git://github.com/chootka/hotprobs.git"
   },
   "private": true,
   "scripts": {
-    "start": "node subnode"
+    "start": "node app.js"
   },
   "dependencies": {
     "express": "3.0.6",

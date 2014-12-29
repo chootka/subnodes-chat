@@ -1,8 +1,8 @@
 /**
- * Subnodes is an open source project that enables people to easily set up portable access points for serving content.
+ * Hot Probs is a simple chat room built with Node.js
  * Author : Sarah Grant
- * Github : http://github.com/chootka/subnodes
- * License: AGPLv3 http://www.gnu.org/licenses/agpl-3.0.html
+ * Github : http://github.com/chootka/hotprobs
+ * License: 
  */
 
 /**
