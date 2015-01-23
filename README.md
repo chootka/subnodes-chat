@@ -1,4 +1,4 @@
 hotprobs
 ========
 
-Hot Probs Node.js chat room.
+Hot Probs Node.js and Socket.io chat room.
