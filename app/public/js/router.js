@@ -1,4 +1,4 @@
-/*global me, app*/
+
 var Router = require('ampersand-router');
 var HomePage = require('./pages/home');
 var ChatPage = require('./pages/chat');
@@ -7,7 +7,7 @@ var ChatPage = require('./pages/chat');
 module.exports = Router.extend({
     routes: {
         '': 'main',
-        'chat': 'messages',
+        'chat': 'chat',
         '(*path)': 'catchAll'
     },
 
@@ -20,7 +20,7 @@ module.exports = Router.extend({
 
     chat: function() {
         this.trigger('page', new ChatPage({
-            model: messages,
+            model: chat,
             collection: app.messages
         }));
     },

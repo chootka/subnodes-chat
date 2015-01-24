@@ -19,7 +19,8 @@ module.exports = View.extend({
         this.listenTo(app.router, 'page', this.handleNewPage);
     },
     events: {
-        'click a[href]': 'handleLinkClick'
+        'click a[href]': 'handleLinkClick',
+        'click #buttonWrapper': 'joinClick'
     },
     render: function () {
         // some additional stuff we want to add to the document head

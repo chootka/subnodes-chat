@@ -11,7 +11,10 @@
     "url": "git://github.com/chootka/hotprobs.git"
   },
   "private": true,
-  "main": "server.js",
+  "main": "./app/server/web.js",
+  "scripts": {
+    "start": "node ./app/server/web"
+  },
   "dependencies": {
     "ampersand-dom": "^1.2.1",
     "ampersand-form-view": "^2.0.0",

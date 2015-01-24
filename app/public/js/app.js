@@ -1,20 +1,20 @@
 // libraries
-var _ = require('underscore');
-var logger = require('andlog');
-var config = require('clientconfig');
-var io = require('socket.io-client');
-var domReady = require('domready');
+var _ = require('underscore')
+    ,logger = require('andlog')
+    ,config = require('clientconfig')
+    ,io = require('socket.io-client')
+    ,domReady = require('domready')
 
 // router!
-var Router = require('./router');
+    ,Router = require('./router')
 
 // views ( @__@)
-var MainView = require('./views/main');
+    ,MainView = require('./views/main')
 
 // models (^__^)b
-var Main = require('./models/main');
-var Messages = require('./models/messages');
-var Users = require('./models/users');
+    ,Main = require('./models/main')
+    ,Users = require('./models/users')
+    ,Messages = require('./models/messages');
 
 
 // ampersand-io -- might use
@@ -41,13 +41,13 @@ module.exports = {
     init: function () {
         var self = window.app = this;
 
-        // create our global 'main' object and empty collections for our user and message models.
+        // create our global 'main' object
         window.main = new Main();
-        this.users = new Users();
-        this.messages = new Messages();
 
         // init our URL handlers and the history tracker
         this.router = new Router();
+        this.users = new Users();
+        this.messages = new Messages();
 
         // wait for document ready to render our main view
         // this ensures the document has a body, etc.

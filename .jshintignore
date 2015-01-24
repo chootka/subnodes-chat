@@ -1,6 +1,3 @@
 node_modules
-public/
-client/modules
-client/libraries
-client/templates.js
-test/*
+app/public/
+app/client/templates.js
