@@ -5,34 +5,16 @@ var _ = require('underscore')
     ,io = require('socket.io-client')
     ,domReady = require('domready')
 
-// router!
+    // router!
     ,Router = require('./router')
 
-// views ( @__@)
+    // views ( @__@)
     ,MainView = require('./views/main')
 
-// models (^__^)b
+    // models (^__^)b
     ,Main = require('./models/main')
     ,Users = require('./models/users')
     ,Messages = require('./models/messages');
-
-
-// ampersand-io -- might use
-// var AIO = require('ampersand-io');
-
-// aio = new AIO('', {
-//     events: {
-//         receive: 'new-message'
-//     },
-//     listeners: {
-//         receive: {
-//             fn: function(data, next) {
-//                 console.log("new message: " + data);
-//             },
-//             active: true
-//         }
-//     }
-// });
 
 
 // exports

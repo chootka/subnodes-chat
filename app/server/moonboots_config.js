@@ -21,7 +21,7 @@ var MoonbootsCfg = function(options) {
         	moonboots: {
                 jsFileName: 'app',
                 cssFileName: 'app',
-                main: fixPath('app/public/js/app.js'),
+                main: fixPath('app/public/js/main.js'),
                 developmentMode: self.config.isDev,
                 libraries: [
                 ],

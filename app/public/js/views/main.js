@@ -1,4 +1,4 @@
-/*global app, me, $*/
+/*global app, $*/
 // This app view is responsible for rendering all content that goes into
 // <html>. It's initted right away and renders itself on DOM ready.
 
@@ -14,13 +14,12 @@ var setFavicon = require('favicon-setter');
 
 module.exports = View.extend({
     template: templates.body,
+    events: {
+        'click a[href]': 'handleLinkClick'
+    },
     initialize: function () {
         // this marks the correct nav item selected
         this.listenTo(app.router, 'page', this.handleNewPage);
-    },
-    events: {
-        'click a[href]': 'handleLinkClick',
-        'click #buttonWrapper': 'joinClick'
     },
     render: function () {
         // some additional stuff we want to add to the document head
@@ -52,9 +51,6 @@ module.exports = View.extend({
     handleNewPage: function (view) {
         // tell the view switcher to render the new one
         this.pageSwitcher.set(view);
-
-        // mark the correct nav item selected
-        this.updateActiveNav();
     },
 
     handleLinkClick: function (e) {
@@ -67,19 +63,5 @@ module.exports = View.extend({
             e.preventDefault();
             app.navigate(aTag.pathname);
         }
-    },
-
-    updateActiveNav: function () {
-        var path = window.location.pathname.slice(1);
-
-        this.queryAll('.nav a[href]').forEach(function (aTag) {
-            var aPath = aTag.pathname.slice(1);
-
-            if ((!aPath && !path) || (aPath && path.indexOf(aPath) === 0)) {
-                dom.addClass(aTag.parentNode, 'active');
-            } else {
-                dom.removeClass(aTag.parentNode, 'active');
-            }
-        });
     }
 });

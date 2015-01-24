@@ -19,12 +19,12 @@ var Chat = function(options) {
 
     self.handleConnection = function(socket) {
 		// wait for a login
-		socket.on('login', function(username) {
+		socket.on('join', function(username) {
 
 		    var nameBad = !username || username.length < 3 || username.length > 10;
 
 		    if (nameBad) {
-				socket.emit('loginNameBad', username);
+				socket.emit('usernameBad', username);
 				return;
 		    }
 
@@ -35,7 +35,7 @@ var Chat = function(options) {
 
 		    
 		    if (nameExists) {
-				socket.emit("loginNameExists", username);
+				socket.emit("usernameExists", username);
 		    } else {
 				var newUser = new User({ user: username, socket: socket });
 				
