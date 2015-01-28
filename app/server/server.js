@@ -8,8 +8,9 @@ var path = require('path')
     ,bodyParser = require('body-parser')
     ,server = require('http').createServer(app)
     ,io = require('socket.io')(server)
-    ,MoonbootsCfg = require('./moonboots_config')
-    ,Chat = require('./chat');
+    ,SocketServer = require('./socket_server')
+    ,api = require('./api')
+    ,MoonbootsCfg = require('./moonboots_config');
 
 
 // -----------------
@@ -28,13 +29,12 @@ app.set('view engine', 'jade');
 // --------------------------
 // Set up our API
 // --------------------------
-var api = require('./api');
-app.get('/api/users', api.list);
-app.get('/api/users/:id', api.getUser);
-app.delete('/api/users/:id', api.deleteUser);
-app.put('/api/users/:id', api.updateUser);
-app.post('/api/users', api.addUser);
-app.post('/api/messages', api.addMessage);
+// var api = require('./api');
+// app.delete('/api/users/:id', api.deleteUser);
+// app.post('/api/users', api.addUser);
+// app.get('/api/users', api.getUsers);
+// app.post('/api/message', api.addMessage);
+// app.get('/api/messages', api.getMessages);
 
 
 // ----------------------------
@@ -60,6 +60,6 @@ console.log('Hot Probs is running at: http://localhost:' + config.http.port + '.
 
 
 // ---------------------------------------------------
-// Set up socket.io listeners for our chat application
+// Set up socket.io listeners for our application
 // ---------------------------------------------------
-new Chat({ io: io }).init();
+new SocketServer({ io: io }).init();

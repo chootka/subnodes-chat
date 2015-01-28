@@ -25,24 +25,24 @@
         return '<!DOCTYPE html><html><head><title>HOT PROBS</title><meta name="HandheldFriendly" content="True"><meta name="MobileOptimized" content="320"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><meta http-equiv="cleartype" content="on"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="apple-touch-icon" href="/img/apple-touch-icon.png"><link rel="shortcut icon" href="/img/apple-touch-icon.png"></head></html>';
     };
 
-    // includes/formInput.jade compiled template
-    templatizer["includes"]["formInput"] = function tmpl_includes_formInput() {
-        return '<div class="form-group"><label data-hook="label"></label><div data-hook="message-container"><div data-hook="message-text" class="alert alert-danger"></div></div><input class="form-control"/></div>';
-    };
-
     // includes/message.jade compiled template
     templatizer["includes"]["message"] = function tmpl_includes_message() {
-        return '<li class="message list-group-item"><img data-hook="avatar" width="40" height="40"/><a data-hook="name"></a><p data-hook="message"></p></li>';
+        return '<li class="message list-group-item"><p data-hook="username"></p><p data-hook="message"></p></li>';
     };
 
     // pages/chat.jade compiled template
     templatizer["pages"]["chat"] = function tmpl_pages_chat() {
-        return '<section class="page chat"><div id="chat"><div id="conversation"><div id="incoming"></div></div><div id="sendMessage"><textarea rows="1" name="msg" id="msg"></textarea></div></div></section>';
+        return '<section class="page chat"><div id="chat"><div id="conversation"><div data-hook="incoming"></div></div><div data-hook="send"><textarea rows="1" name="msg" id="msgInput"></textarea></div></div></section>';
     };
 
-    // pages/home.jade compiled template
-    templatizer["pages"]["home"] = function tmpl_pages_home() {
-        return '<section class="page home"><div id="login"><p>enter a screen name:</p><div id="screenname" contenteditable="true" spellcheck="false" required="true" class="singleLine"></div><div id="buttonWrapper"><button id="joinButton">JOIN MAIN CHAT ROOM</button></div></div><div id="about"><p>HOT PROBS is a free and anonymous network. Log on for local chat with others in your immediate area. All communication takes place offline and anonymously, so go ahead and say what you really feel.<br/><br/>HOT PROBS is built on top of Subnodes (http://subnod.es), an open source project that enables people to easily set up portable local area networks for anonymous, local communication.</p></div></section>';
+    // pages/login.jade compiled template
+    templatizer["pages"]["login"] = function tmpl_pages_login() {
+        return '<section class="page login"><div id="login"><p>enter a screen name:</p><div id="username" contenteditable="true" spellcheck="false" required="true" class="singleLine"></div><div id="buttonWrapper"><button data-hook="loginButton">START CHATTING</button></div></div><div id="about"><p>HOT PROBS is a free and anonymous network. Log on for local chat with others in your immediate area. All communication takes place offline and anonymously, so go ahead and say what you really feel.<br/><br/>HOT PROBS is built on top of Subnodes (http://subnod.es), an open source project that enables people to easily set up portable local area networks for anonymous, local communication.</p></div></section>';
+    };
+
+    // pages/messages.jade compiled template
+    templatizer["pages"]["messages"] = function tmpl_pages_messages() {
+        return '<section class="page chat"><div id="chat"><div id="conversation"><ul data-hook="incoming" class="message-group"></ul></div><div data-hook="send"><textarea rows="1" name="msg" id="msgInput"></textarea></div></div></section>';
     };
 
     return templatizer;

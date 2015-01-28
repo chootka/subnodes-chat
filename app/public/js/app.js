@@ -1,59 +1,71 @@
-// libraries
+// Application Controller
+
 var _ = require('underscore')
     ,logger = require('andlog')
     ,config = require('clientconfig')
-    ,io = require('socket.io-client')
     ,domReady = require('domready')
+    ,io = require('socket.io-client')
 
-    // router!
+    // socket client
+    ,SocketClient = require('./socket_client')
+
+    // router! ~(=.= ~)
     ,Router = require('./router')
 
-    // views ( @__@)
+    // views (> @__@)>
     ,MainView = require('./views/main')
 
-    // models (^__^)b
-    ,Main = require('./models/main')
-    ,Users = require('./models/users')
-    ,Messages = require('./models/messages');
-
+    // models (^__^ )b
+    ,Login = require('./models/login')
+    ,Chat = require('./models/chat')
+    ,Users = require('./models/user-collection')
+    ,Messages = require('./models/message-collection');
 
 // exports
 module.exports = {
+
     // this is the the whole app init
     init: function () {
+
         var self = window.app = this;
 
-        // create our global 'main' object
-        window.main = new Main();
+        // Socket.io
+        this.socketClient = new SocketClient( {io: io} );
 
-        // init our URL handlers and the history tracker
+        // Router
         this.router = new Router();
-        this.users = new Users();
+
+        // Models
         this.messages = new Messages();
+        this.chat = new Chat();
+        
+        // Collections
+        this.users = new Users(); // is this ever actually used? seems like no
+        this.login = new Login();
 
         // wait for document ready to render our main view
         // this ensures the document has a body, etc.
         domReady(function () {
+
             // init our main view
             var mainView = self.view = new MainView({
-                model: main,
+                model: self.login,
                 el: document.body
             });
 
             // ...and render it
             mainView.render();
-
-            // init io + create even listeners
-            this.socket = io.connect('http://localhost:8080');
-            this.socket.on('connect_error', function(err) { console.log('Error connecting to ' + url, error); });
-            this.socket.on('connect', function() { console.log("connect"); });
-            this.socket.on('event', function(data) { console.log("event"); });
-            this.socket.on('disconnect', function() { console.log("disconnect"); });
+            
+            // start io connection
+            self.socketClient.connect();
 
             // we have what we need, we can now start our router and show the appropriate page
             self.router.history.start({pushState: true, root: '/'});
         });
     },
+
+
+    // methods
 
     // This is how you navigate around the app.
     // this gets called by a global click handler that handles
@@ -61,9 +73,23 @@ module.exports = {
     // it expects a url without a leading slash.
     // for example: "costello/settings".
     navigate: function (page) {
+        
         var url = (page.charAt(0) === '/') ? page.slice(1) : page;
         this.router.history.navigate(url, {trigger: true});
     }
+
+    // example of manually adding a user
+    // app.users.add([
+    //     {socket: {}, username: 'chootka', message: ''}
+    // ]);
+
+    // // example of getting just the username or last message of a user
+    // app.users.map(function (user) { return user.username; });
+    // app.users.map(function (user) { return user.message; });
+
+    // user.on('change:message', someFunc);
+    // user.message = this.$('#msgInput').text(); // fires change event above
+
 };
 
 // run it

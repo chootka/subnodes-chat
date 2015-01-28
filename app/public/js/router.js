@@ -1,7 +1,7 @@
 
-var Router = require('ampersand-router');
-var HomePage = require('./pages/home');
-var ChatPage = require('./pages/chat');
+var Router = require('ampersand-router')
+    ,LoginPage = require('./pages/login')
+    ,ChatPage = require('./pages/chat');
 
 
 module.exports = Router.extend({
@@ -13,14 +13,14 @@ module.exports = Router.extend({
 
     // ------- ROUTE HANDLERS ---------
     main: function () {
-        this.trigger('page', new HomePage({
-            model: main
+        this.trigger('page', new LoginPage({
+            model: app.login
         }));
     },
 
     chat: function() {
         this.trigger('page', new ChatPage({
-            model: chat,
+            model: app.chat,
             collection: app.messages
         }));
     },

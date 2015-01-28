@@ -2,6 +2,7 @@ var Moonboots = require('moonboots-express')
     ,stylizer = require('stylizer')
     ,templatizer = require('templatizer')
     ,path = require('path');
+    
 
 // a little helper for fixing paths for various environments
 var fixPath = function (pathString) {
@@ -21,7 +22,7 @@ var MoonbootsCfg = function(options) {
         	moonboots: {
                 jsFileName: 'app',
                 cssFileName: 'app',
-                main: fixPath('app/public/js/main.js'),
+                main: fixPath('app/public/js/app.js'),
                 developmentMode: self.config.isDev,
                 libraries: [
                 ],

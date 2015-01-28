@@ -3,57 +3,71 @@
 // <html>. It's initted right away and renders itself on DOM ready.
 
 // This view also handles all the 'document' level events such as keyboard shortcuts.
-var View = require('ampersand-view');
-var ViewSwitcher = require('ampersand-view-switcher');
-var _ = require('underscore');
-var domify = require('domify');
-var dom = require('ampersand-dom');
-var templates = require('../templates');
-var setFavicon = require('favicon-setter');
+var _ = require('underscore') // remove
+    ,View = require('ampersand-view')
+    ,ViewSwitcher = require('ampersand-view-switcher')
+    ,domify = require('domify')
+    ,dom = require('ampersand-dom')
+    ,templates = require('../templates')
+    ,setFavicon = require('favicon-setter');
 
 
 module.exports = View.extend({
     template: templates.body,
     events: {
-        'click a[href]': 'handleLinkClick'
+        'click a[href]': 'handleLinkClick' // remove
     },
+
+
+    // methods
+    
     initialize: function () {
-        // this marks the correct nav item selected
+
         this.listenTo(app.router, 'page', this.handleNewPage);
+    
+        this.listenTo(app.users, "add", this.userAdded, this);
+        this.listenTo(app.users, "remove", this.userRemoved, this);
+
+        this.listenTo(app.messages, "add", this.renderChat, this);
+        this.listenTo(app.messages, "remove", this.renderChats, this);
+        this.listenTo(app.messages, "reset", this.renderChats, this);
     },
     render: function () {
+
         // some additional stuff we want to add to the document head
         document.head.appendChild(domify(templates.head()));
 
         // main renderer
-        this.renderWithTemplate({main: main});
+        this.renderWithTemplate({login: app.login});
 
         // init and configure our page switcher
         this.pageSwitcher = new ViewSwitcher(this.queryByHook('page-container'), {
+            
             show: function (newView, oldView) {
-                // it's inserted and rendered for me
-                document.title = _.result(newView, 'pageTitle') || 'Hot Probs';
+                
+                document.title = newView.pageTitle || 'Hot Probs';
                 document.scrollTop = 0;
 
                 // add a class specifying it's active
                 dom.addClass(newView.el, 'active');
 
-                // store an additional reference, just because
-                app.currentPage = newView;
             }
         });
 
-        // setting a favicon for fun (note, it's dynamic)
-        //setFavicon('/images/ampersand.png');
+        //setFavicon('/images/hotprobs.png');
         return this;
     },
 
+    // event handlers
+
     handleNewPage: function (view) {
+
         // tell the view switcher to render the new one
         this.pageSwitcher.set(view);
     },
 
-    handleLinkClick: function (e) {
+    handleLinkClick: function (e) { // remove
+
         var aTag = e.target;
         var local = aTag.host === window.location.host;
 
@@ -63,5 +77,30 @@ module.exports = View.extend({
             e.preventDefault();
             app.navigate(aTag.pathname);
         }
+    },
+
+    addMessage: function(username, message) {
+
+        console.log("addMessage, notified in main.js view");
+
+
+        var u = app.users.find( function(user) { 
+            return user.get('username') == username;
+        });
+        if (u) {
+            app.messages( new Message({user: user, message: message}) );
+        }
+    },
+    userAdded: function() {
+        console.log("user added to users-collection, notified in main.js view");
+    },
+    userRemoved: function() {
+        console.log("user removed from users-collection, notified in main.js view");
+    },
+    renderChat: function() {
+        console.log("renderChat, message added to messages-collection, notified in main.js view");
+    },
+    renderChats: function() {
+        console.log("renderChats, message removed from messages-collection, notified in main.js view");
     }
 });
