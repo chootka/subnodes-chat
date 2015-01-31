@@ -1,5 +1,6 @@
 var _ = require('underscore')
-    ,AmpersandState = require('ampersand-state');
+    ,AmpersandState = require('ampersand-state')
+    ,Message = require('./models/message');
 
 
 module.exports = AmpersandState.extend({
@@ -16,9 +17,7 @@ module.exports = AmpersandState.extend({
         this.io = io;
        
         this.socket = this.io.connect(this.hostname);
-        this.socket.on('connect', function(d) {
-
-            console.log("client socket connected");
+        this.socket.on('connect', function() {
 
             self.setResponseListeners(self.socket);
         });
@@ -30,8 +29,6 @@ module.exports = AmpersandState.extend({
     },
 
     chat: function(message) {
-
-        // console.log("chat requested from client, message: " + message.message);
 
         this.socket.emit('chat', message);
     },
@@ -50,22 +47,15 @@ module.exports = AmpersandState.extend({
 
         socket.on('loginNameExists', function(data) {
 
-            app.login.save(data, {
-                wait: true,
-                success: function () {
-                    console.log("Login Name Exists, notified in socket client");
-                }
-            });
+            app.login.error = data;
+            console.log("Login Name Exists, notified in socket client");
+
         });
 
         socket.on('loginNameBad', function(data) {
 
-            app.login.save(data, {
-                wait: true,
-                success: function () {
-                    console.log("Login Name Malformed, notified in socket client");
-                }
-            });
+            app.login.error = data;
+            console.log("Login Name Malformed, notified in socket client");
         });
 
         socket.on('saveLocalUser', function(user) {
@@ -76,14 +66,15 @@ module.exports = AmpersandState.extend({
 
         socket.on('userJoined', function(user) {
 
-            // console.log("a new user has joined, notified in socket client: " + user.username);
-
             // assign the user a color (just for fun!)
             var colors = ['#dfe937', '#ff9b39', '#2fa9f0', '#946af1', '#39f0c3'];
             user.color = colors[ Math.floor(Math.random() * colors.length) ];
 
             // add the new user to our user-collection
             app.users.add( user );
+
+            // generate new message about this
+            app.messages.add( new Message( {user: user, message: ' has joined.'}) );
             
         });
 
@@ -98,21 +89,23 @@ module.exports = AmpersandState.extend({
 
                 // remove user from our user-collection
                 app.users.remove( u );
+
+                // generate new message about this
+                app.messages.add( new Message( {user: u, message: ' has left.'}) );
             }
 
         });
 
-        socket.on('onlineUsers', function(data) {
+        socket.on('onlineUsers', function(users) {
 
             // console.log('onlineUsers requested, notified in socket client: ' + data);
 
-            //self.emitter.emit('onlineUsers', data);
+            // generate new message about this
+            // app.messages.add( new Message( {user: null, message: user.length + ' are chatting.'}) );
 
         });
 
         socket.on('messageReceived', function(message) {
-
-            // console.log("from client socket, display message from user " + message.user.username + ": " + message.message);
 
             // add message to our message-collection
             app.messages.add( message );
