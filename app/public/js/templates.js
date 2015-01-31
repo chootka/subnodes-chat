@@ -17,7 +17,7 @@
 
     // body.jade compiled template
     templatizer["body"] = function tmpl_body() {
-        return '<body><nav class="navbar navbar-default"><div class="container-fluid"><div class="navbar-header"><a href="/" class="navbar-brand">Hot Probs</a></div><ul class="nav navbar-nav"><li><a href="/">home</a></li><li><a href="/chat">chat</a></li></ul></div></nav><div class="container"><main data-hook="page-container"></main></div></body>';
+        return '<body><div class="container"><main data-hook="page-container"></main></div></body>';
     };
 
     // head.jade compiled template
@@ -27,12 +27,7 @@
 
     // includes/message.jade compiled template
     templatizer["includes"]["message"] = function tmpl_includes_message() {
-        return '<li class="message list-group-item"><p data-hook="username"></p><p data-hook="message"></p></li>';
-    };
-
-    // pages/chat.jade compiled template
-    templatizer["pages"]["chat"] = function tmpl_pages_chat() {
-        return '<section class="page chat"><div id="chat"><div id="conversation"><div data-hook="incoming"></div></div><div data-hook="send"><textarea rows="1" name="msg" id="msgInput"></textarea></div></div></section>';
+        return '<li class="message"><div data-hook="username"></div><div data-hook="message"></div></li>';
     };
 
     // pages/login.jade compiled template
@@ -42,7 +37,7 @@
 
     // pages/messages.jade compiled template
     templatizer["pages"]["messages"] = function tmpl_pages_messages() {
-        return '<section class="page chat"><div id="chat"><div id="conversation"><ul data-hook="incoming" class="message-group"></ul></div><div data-hook="send"><textarea rows="1" name="msg" id="msgInput"></textarea></div></div></section>';
+        return '<section class="page messages"><div id="chat"><div id="conversation"><ul data-hook="incoming" class="message-group"></ul></div><div data-hook="send"><textarea data-hook="message" rows="1" name="msg" id="message"></textarea></div></div></section>';
     };
 
     return templatizer;

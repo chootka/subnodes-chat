@@ -1,8 +1,8 @@
-var Collection = require('ampersand-rest-collection')
+var Collection = require('ampersand-collection')
+	,underscoreMixin = require("ampersand-collection-underscore-mixin")
 	,User = require('./user');
 	
 
-module.exports = Collection.extend({
-    model: User,
-    url: '/api/users'
+module.exports = Collection.extend(underscoreMixin, {
+    model: User
 });

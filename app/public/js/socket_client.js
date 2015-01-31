@@ -1,47 +1,54 @@
-_ = require('underscore'),
-User = require('./models/user');
+var _ = require('underscore')
+    ,AmpersandState = require('ampersand-state');
 
 
-var SocketClient = function(options) {
-	
-    var self = this;
+module.exports = AmpersandState.extend({
+    props: {
+        hostname: 'http://' + window.location.host,
+        io: {},
+        socket: {}
+    },
 
-    self.hostname = 'http://' + window.location.host;
+    connect: function(io) {
 
-    self.io = options.io;
+        var self = this;
 
-    self.socket = {};
+        this.io = io;
+       
+        this.socket = this.io.connect(this.hostname);
+        this.socket.on('connect', function(d) {
 
-    self.connect = function() {
+            console.log("client socket connected");
 
-    	self.socket = self.io.connect(self.hostname);
+            self.setResponseListeners(self.socket);
+        });
+    },
 
-    	self.socket.on('connect', function(d) {
+    login: function(username) {
 
-    		console.log("client socket connected");
+        this.socket.emit('login', username);
+    },
 
-    		self.setResponseListeners(self.socket);
-    	})
-    }
+    chat: function(message) {
 
-    self.login = function(username) {
-    	self.socket.emit('login', username);
-    }
+        // console.log("chat requested from client, message: " + message.message);
 
-    self.chat = function(chat) {
-    	self.socket.emit('chat', chat);
-    }
+        this.socket.emit('chat', message);
+    },
     
-    self.setResponseListeners = function(socket) {
+    setResponseListeners: function(socket) {
 
-    	socket.on('welcome', function(data) {
+        var self = this;
 
-            console.log("welcome!");
+        socket.on('welcome', function(data) {
 
-    		//this.trigger('loginComplete', data);
-    	});
+            // console.log("Welcome! Getting currently online users...");
 
-    	socket.on('loginNameExists', function(data) {
+            // who is currently online?
+            socket.emit('onlineUsers');
+        });
+
+        socket.on('loginNameExists', function(data) {
 
             app.login.save(data, {
                 wait: true,
@@ -49,9 +56,9 @@ var SocketClient = function(options) {
                     console.log("Login Name Exists, notified in socket client");
                 }
             });
-    	});
+        });
 
-    	socket.on('loginNameBad', function(data) {
+        socket.on('loginNameBad', function(data) {
 
             app.login.save(data, {
                 wait: true,
@@ -59,41 +66,57 @@ var SocketClient = function(options) {
                     console.log("Login Name Malformed, notified in socket client");
                 }
             });
-    	});
+        });
 
-    	socket.on('onlineUsers', function(data) {
+        socket.on('saveLocalUser', function(user) {
+            
+            // save local user to main chat model
+            app.chat.username = user.username;
+        });
 
-    		console.log('onlineUsers requested, notified in socket client: ' + data);
+        socket.on('userJoined', function(user) {
 
-    		//this.trigger('usersInfo', data);
-    	});
+            // console.log("a new user has joined, notified in socket client: " + user.username);
 
-    	socket.on('userJoined', function(username) {
+            // assign the user a color (just for fun!)
+            var colors = ['#dfe937', '#ff9b39', '#2fa9f0', '#946af1', '#39f0c3'];
+            user.color = colors[ Math.floor(Math.random() * colors.length) ];
 
-            console.log("a new user has joined, notified in socket client: " + username);
+            // add the new user to our user-collection
+            app.users.add( user );
+            
+        });
 
-            // add our new user to the users collection
-            var newUser = new User( {username: username, socket: socket} );
-            app.users.add( newUser );
+        socket.on('userLeft', function(username) {
 
-            socket.emit('onlineUsers');
-    	});
+            // console.log("userLeft, notified in socket client: " + username);
 
-    	socket.on('userLeft', function(user) {
+            var u = app.users.find( function(user) { 
+                return user.get('username') == username;
+            });
+            if (u) {
 
-            console.log("userLeft, notified in socket client: " + user.username);
+                // remove user from our user-collection
+                app.users.remove( u );
+            }
 
-            app.users.remove( user );
-    	});
+        });
 
-		socket.on('chat', function(data) {
+        socket.on('onlineUsers', function(data) {
 
-			console.log('client socket received chat, notified in socket client');
+            // console.log('onlineUsers requested, notified in socket client: ' + data);
 
-		  	//this.trigger('chatReceived', data);
-		});
+            //self.emitter.emit('onlineUsers', data);
+
+        });
+
+        socket.on('messageReceived', function(message) {
+
+            // console.log("from client socket, display message from user " + message.user.username + ": " + message.message);
+
+            // add message to our message-collection
+            app.messages.add( message );
+        });
     }
-    
-}
 
-module.exports = SocketClient;
+});

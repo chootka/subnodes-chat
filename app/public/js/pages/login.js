@@ -12,21 +12,16 @@ module.exports = PageView.extend({
     // methods
 
     initialize: function () {
-        console.log("init login PageView");
 
         // if there is an error, handle it
         this.listenTo(this.model, 'change:error', this.handleError, this);
     },
     render: function () {
 
-        console.log("render login PageView");
-
         this.renderWithTemplate();
-
-        return this; // why are we returning this ?
     },
     handleError: function(err) {
-        console.log("error captured on login");
+        console.log("error captured on login: " + err);
     },
     onLogin: function(e) {
 

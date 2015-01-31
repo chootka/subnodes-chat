@@ -1,7 +1,7 @@
 
 var Router = require('ampersand-router')
     ,LoginPage = require('./pages/login')
-    ,ChatPage = require('./pages/chat');
+    ,ChatPage = require('./pages/messages');
 
 
 module.exports = Router.extend({

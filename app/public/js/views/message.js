@@ -5,7 +5,8 @@ var View = require('ampersand-view')
 module.exports = View.extend({
     template: templates.includes.message,
     bindings: {
-        'model.username': '[data-hook=username]',
+        'model.user.username': '[data-hook=username]',
+        //'model.user.color': '[data-hook=color]',
         'model.message': '[data-hook=message]'
     },
 
@@ -13,16 +14,16 @@ module.exports = View.extend({
     // methods
     
     initialize: function () {
-
     },
-    // render: function () {
+    render: function () {
 
-    //     // main renderer
-    //     this.renderWithTemplate({message: this.model});
+        // main renderer
+        console.log("this.model.user.color: " + this.model.user.color);
 
-    //     return this;
-    // },
+        this.renderWithTemplate({message: this.model});
 
+        return this;
+    },
     delete: function() {
         
         this.model.destroy();

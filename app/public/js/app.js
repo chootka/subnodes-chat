@@ -1,7 +1,7 @@
 // Application Controller
 
 var _ = require('underscore')
-    ,logger = require('andlog')
+    // ,logger = require('andlog')
     ,config = require('clientconfig')
     ,domReady = require('domready')
     ,io = require('socket.io-client')
@@ -30,17 +30,15 @@ module.exports = {
         var self = window.app = this;
 
         // Socket.io
-        this.socketClient = new SocketClient( {io: io} );
+        this.socketClient = new SocketClient();
 
         // Router
         this.router = new Router();
 
-        // Models
+        // Models + Collections
         this.messages = new Messages();
         this.chat = new Chat();
-        
-        // Collections
-        this.users = new Users(); // is this ever actually used? seems like no
+        this.users = new Users();
         this.login = new Login();
 
         // wait for document ready to render our main view
@@ -57,7 +55,7 @@ module.exports = {
             mainView.render();
             
             // start io connection
-            self.socketClient.connect();
+            self.socketClient.connect(io);
 
             // we have what we need, we can now start our router and show the appropriate page
             self.router.history.start({pushState: true, root: '/'});
@@ -68,27 +66,11 @@ module.exports = {
     // methods
 
     // This is how you navigate around the app.
-    // this gets called by a global click handler that handles
-    // all the <a> tags in the app.
-    // it expects a url without a leading slash.
-    // for example: "costello/settings".
     navigate: function (page) {
         
         var url = (page.charAt(0) === '/') ? page.slice(1) : page;
         this.router.history.navigate(url, {trigger: true});
     }
-
-    // example of manually adding a user
-    // app.users.add([
-    //     {socket: {}, username: 'chootka', message: ''}
-    // ]);
-
-    // // example of getting just the username or last message of a user
-    // app.users.map(function (user) { return user.username; });
-    // app.users.map(function (user) { return user.message; });
-
-    // user.on('change:message', someFunc);
-    // user.message = this.$('#msgInput').text(); // fires change event above
 
 };
 

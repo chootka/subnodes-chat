@@ -6,10 +6,9 @@ var path = require('path')
     ,serveStatic = require('serve-static')
     ,cookieParser = require('cookie-parser')
     ,bodyParser = require('body-parser')
-    ,server = require('http').createServer(app)
-    ,io = require('socket.io')(server)
+    ,http = require('http').createServer(app)
+    ,server = require('socket.io')(http)
     ,SocketServer = require('./socket_server')
-    ,api = require('./api')
     ,MoonbootsCfg = require('./moonboots_config');
 
 
@@ -24,17 +23,6 @@ app.use(bodyParser.json());
 
 // use Jade for template engine
 app.set('view engine', 'jade');
-
-
-// --------------------------
-// Set up our API
-// --------------------------
-// var api = require('./api');
-// app.delete('/api/users/:id', api.deleteUser);
-// app.post('/api/users', api.addUser);
-// app.get('/api/users', api.getUsers);
-// app.post('/api/message', api.addMessage);
-// app.get('/api/messages', api.getMessages);
 
 
 // ----------------------------
@@ -55,11 +43,11 @@ new MoonbootsCfg({ app: app, config: config }).init();
 // ----------------------
 // Set up our HTTP server
 // ----------------------
-server.listen(config.http.port);
+http.listen(config.http.port);
 console.log('Hot Probs is running at: http://localhost:' + config.http.port + '.');
 
 
 // ---------------------------------------------------
 // Set up socket.io listeners for our application
 // ---------------------------------------------------
-new SocketServer({ io: io }).init();
+new SocketServer({ io: server }).init();

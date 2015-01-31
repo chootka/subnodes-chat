@@ -1,5 +1,5 @@
 var _ = require('underscore')
-	,User = require('../public/js/models/user');
+    ,AmpersandState = require('ampersand-state');
 
 
 var SocketServer = function(options) {
@@ -8,6 +8,8 @@ var SocketServer = function(options) {
 
     self.io = options.io;
 
+    // keep track of who is online
+    // eventually save this to a db for better synching
     self.users = [];
 
     self.init = function() {
@@ -51,43 +53,49 @@ var SocketServer = function(options) {
 		    } else {
 				console.log('server says: success. creating new user!');
 
-				var newUser = { username: username, socket: socket };
+				var newUser = { id: socket.id, username: username };
 				
-				// can i sync the local self.users arr to the users collection on client side?
+				//can i sync the local self.users arr to the users collection on client side?
+				// save user locally here
 				self.users.push(newUser);
 
-				self.setResponseListeners(newUser);
-				
-				socket.emit('welcome');
-				self.io.sockets.emit('userJoined', username);
+				self.setResponseListeners(newUser, socket);
+
+				// save local user
+				socket.emit('saveLocalUser', newUser);
+				// let all other clients know a new user joined
+				self.io.emit('userJoined', newUser);
 		    }
 		});
 	}
 
-	self.setResponseListeners = function(user) {
+	self.setResponseListeners = function(user, socket) {
 
-		user.socket.on('disconnect', function() {
-			console.log("socket has disconnected");
+		socket.on('disconnect', function() {
+			console.log("server socket has disconnected: " + user.username);
 
 		    self.users.splice(self.users.indexOf(user), 1);
-		    self.io.sockets.emit('userLeft', user.username);
+		    self.io.emit('userLeft', user.username);
 		});
 
-		user.socket.on('onlineUsers', function() {
+		socket.on('onlineUsers', function() {
 
-			console.log('socket is getting online users');
+			console.log('server socket is getting online users');
 
 		    var users = _.map(self.users, function(u) {
 
 				return u.username;
 		    });
 		    
-		    user.socket.emit('onlineUsers', users);
+		    socket.emit('onlineUsers', users);
 		});
 		
-		user.socket.on('chat', function(chat) {
-			if (chat) {
-				self.io.sockets.emit('chat', {sender: user.username, message: chat});
+		socket.on('chat', function(message) {
+			console.log("chat message received on server socket");
+
+			if (message) {
+				// broadcast to everyone including the message sender
+				self.io.emit('messageReceived', message);
 			}
 		});
 	}

@@ -1,6 +1,6 @@
-section.page.chat
+section.page.messages
 	#chat
 		#conversation
 			ul(data-hook='incoming' class='message-group')
 		div(data-hook='send')
-			textarea(rows='1', name='msg', id='msgInput')
+			textarea(data-hook='message' rows='1', name='msg', id='message')
